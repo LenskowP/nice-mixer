@@ -1,0 +1,40 @@
+window {
+    background-color: #222222;
+    color : #FFFFFF;
+    border-radius: 4px;
+}
+
+box {
+    background-color: #333333;
+    color : #FFFFFF;
+    border-radius: 4px;
+}
+
+/* scale {
+    background-color: #444444;
+    color : #FFFFFF;
+    border-radius: 4px;
+} */
+
+.main {
+    background-color: #222222;
+    color : #FFFFFF;
+    border-radius: 6px;
+    font-size: large;
+    font-weight: bold;
+}
+
+.slider_group {
+    background-color: #444444;
+    color: white;
+    border-radius: 4px;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.slider {
+    background-color: #171717;
+    color: white;
+    border-radius: 2px;
+    font-size: medium;
+}

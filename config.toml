@@ -1,0 +1,42 @@
+[devices]
+master_bus = { name = "Master", node_id = 66 }
+stream_bus = { name = "Stream", node_id = 68 }
+
+in_buses = [
+    { name = "Mic", node_id = 48 }
+]
+
+out_buses = [
+    { name = "Default", node_id = 51 },
+    { name = "Game", node_id = 54 },
+    { name = "Comms", node_id = 57 },
+    { name = "Media", node_id = 60 },
+    { name = "Other", node_id = 63 }
+]
+
+[apps]
+routed = {}
+unrouted = []
+
+# [naming]
+# mix_main = "Master"
+# mix_stream = "Stream"
+
+# out_mix
+
+[theme]
+window_background_color = "#171717"
+group_background_color = "#171717"
+mixer_background_color = "#171717"
+
+group_font_color = "#FFFFFF"
+group_font_size = 14
+group_font_name = ""
+
+mixer_font_color = "#FFFFFF"
+mixer_font_size = 14
+mixer_font_name = ""
+
+other_font_color = "#FFFFFF"
+other_font_size = 14
+other_font_name = ""
