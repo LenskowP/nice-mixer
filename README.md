@@ -86,4 +86,4 @@ Contributions, feature requests, and bug reports are welcome. If you have ideas 
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the GNU General Public License.
