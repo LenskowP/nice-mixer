@@ -1,3 +1,4 @@
+import re
 import subprocess
 import tomllib
 import gi
@@ -60,10 +61,10 @@ class Mixer(Gtk.Application):
         ## CREATE SLIDER GROUPS
         
         # Mix
-        master_bus = self.config["devices"]["master_bus"]
-        stream_bus = self.config["devices"]["stream_bus"]
+        master_node = self.config["devices"]["master_node"]
+        stream_node = self.config["devices"]["stream_node"]
 
-        mix_sliders = [master_bus, stream_bus]
+        mix_sliders = [master_node, stream_node]
 
         mix_slider_group = self.create_slider_group(box, "Mix", mix_sliders)
 
@@ -71,7 +72,7 @@ class Mixer(Gtk.Application):
 
         # Outputs
         
-        out_sliders = self.config["devices"]["out_buses"]
+        out_sliders = self.config["devices"]["out_nodes"]
 
         out_slider_group = self.create_slider_group(box, "Outputs", out_sliders)
 
@@ -79,7 +80,7 @@ class Mixer(Gtk.Application):
 
         # Inputs
 
-        in_sliders = self.config["devices"]["in_buses"]
+        in_sliders = self.config["devices"]["in_nodes"]
 
         in_slider_group = self.create_slider_group(box, "Inputs", in_sliders)
 
@@ -139,7 +140,7 @@ class Mixer(Gtk.Application):
 
         # Create sliders
         for entry in data:
-            slider = self.create_slider(box, entry["name"], entry["node_id"])
+            slider = self.create_slider(box, entry["name"], entry["nice_name"])
             
             slider_box.append(slider)
 
@@ -148,7 +149,7 @@ class Mixer(Gtk.Application):
         return box
     
 
-    def create_slider(self, box, name, node_id) -> Gtk.Box:
+    def create_slider(self, box, name, nice_name) -> Gtk.Box:
         box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
             spacing=10
@@ -161,7 +162,7 @@ class Mixer(Gtk.Application):
 
         box.add_css_class("slider")
 
-        slider = Slider(box, name, node_id)
+        slider = Slider(box, name, nice_name)
 
         match name:
             case "Master":
@@ -176,7 +177,7 @@ class Mixer(Gtk.Application):
 
         box.append(slider.visual_slider)
 
-        label = Gtk.Label(label=name)
+        label = Gtk.Label(label=nice_name)
         label.add_css_class("slider")
 
         box.append(label)
@@ -185,17 +186,25 @@ class Mixer(Gtk.Application):
         
 class Slider():
     name = ""
+    node_name = ""
     node_id = ""
 
-    volume_value = 0
-    monitor_value = 0.0
+    volume_value = 0        # 0 - 100
+    monitor_value = 0.0     # 0 - 100
     
     visual_slider = None
     visual_level = None
 
-    def __init__(self, box, name, node_id):
-        self.name = name
-        self.node_id = node_id
+    def __init__(self, box, name, nice_name):
+        self.name = nice_name
+        self.node_name = name
+
+        id = self._get_node_id(self.node_name)
+
+        if id == "":
+            exit()
+
+        self.node_id = id
         
         self.visual_slider = Gtk.Scale.new_with_range(
                 Gtk.Orientation.VERTICAL,
@@ -221,29 +230,53 @@ class Slider():
 
         if (new_value >= 0):
             self.visual_slider.set_value(new_value)
+        
+        print("Setting slider " + self.node_id + ":'" + self.name + "' to " + str(new_value) + " volume.")
 
         self._connect_signals()
         
 
     def _connect_signals(self):
-        #self.visual_slider.value-changed.connect(self.set_volume)
-        pass
+        self.visual_slider.connect("value-changed", self.set_volume)
 
+    def _get_node_id(self, name) -> str:
+        result= subprocess.run(
+            ["wpctl", "status", "-n"],
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode != 0:
+            return ""
+
+        pattern = rf"(?:.*?)\s*\*?\s*(\d+)\.\s*{re.escape(name)}"
+
+        match = re.search(pattern, result.stdout)
+
+        
+        if match:
+            print("Found " + match.group(1))
+            return match.group(1)
+        else:
+            print("Failed to find node: " + name)
+            return ""
     
-    def set_volume(self, value):
+    def set_volume(self, slider):
+        value = slider.get_value()
+
         if (self.volume_value == value):
             return
         
-        self.volume_value = value * 100
+        self.volume_value = value
 
-        self.apply_volume_change()
+        self.set_system_volume(value / 100)
 
-    def apply_volume_change(self):
+    def set_system_volume(self, value):
         subprocess.run([
             "wpctl",
             "set-volume",
             str(self.node_id),
-            str(self.volume_value / 100)
+            str(value)
         ])
     
     def get_system_volume(self) -> float:
