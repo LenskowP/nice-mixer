@@ -14,9 +14,9 @@ out_buses = [
     { name = "Other", node_id = 63 }
 ]
 
-[apps]
-routed = {}
-unrouted = []
+# [apps]
+# firefox = ""
+
 
 # [naming]
 # mix_main = "Master"
