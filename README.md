@@ -40,7 +40,6 @@ Nice Mixer aims to fill that gap by providing a clean mixer interface for a pred
 - WirePlumber
 - Python 3.12+
 - GTK4
-- `wpctl`
 
 ## Installation
 
@@ -54,7 +53,7 @@ cd nice-mixer
 Install the required packages (Ubuntu / Linux Mint):
 
 ```bash
-sudo apt install python3-gi gir1.2-gtk-4.0
+sudo apt install python3-gi libwireplumber-0.5-dev gir1.2-gtk-4.0
 ```
 
 Ensure PipeWire and WirePlumber are installed and running.
@@ -70,7 +69,8 @@ python3 main.py
 - [x] Basic GTK4 interface
 - [X] Volume sliders
 - [X] Configuration file support
-- [ ] Volume control
+- [X] Volume control
+- [ ] Native PipeWire API integration
 - [ ] Mute controls
 - [ ] Automatic bus discovery
 - [ ] Output device switching
@@ -78,7 +78,7 @@ python3 main.py
 - [ ] Persistent application routing
 - [ ] Profiles and presets
 - [ ] VU meters
-- [ ] Native PipeWire API integration
+
 
 ## Contributing
 

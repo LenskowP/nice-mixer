@@ -1,15 +1,17 @@
+import sys
 import re
 import subprocess
 import tomllib
 import gi
-gi.require_version("Gtk", "4.0")
 
+gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gdk
+
+gi.require_version('Wp', '0.4') 
+from gi.repository import GLib, Wp
 
 
 class Mixer(Gtk.Application):
-    window = None
-    
     config = {}
 
     master_slider = None
@@ -18,6 +20,13 @@ class Mixer(Gtk.Application):
     in_sliders = []
     out_sliders = []
 
+    ## Gtk
+    window = None
+
+    ## WirePlumber
+    loop = None
+    core = None
+
     def __init__(self):
         super().__init__(
             application_id="com.lenskowp.NiceMixer"
@@ -25,6 +34,9 @@ class Mixer(Gtk.Application):
 
 
     def do_activate(self):        
+        # LOAD WIREPLUMBER API
+        self.load_wireplumber_api()
+
         # LOAD THEME
         self.apply_css()
 
@@ -89,6 +101,42 @@ class Mixer(Gtk.Application):
         self.window.set_child(box)
         self.window.present()
 
+
+    def load_wireplumber_api(self):
+        Wp.init(Wp.InitFlags.ALL)
+
+        loop = GLib.MainLoop()
+
+        core = Wp.Core.new(GLib.MainContext.default(), None)
+        core.connect_data("disconnected", self.on_wireplumber_api_disconnected, None, 0)
+
+        if not core.connect():
+            print("Failed to connect to the PipeWire server.")
+            return
+
+        print("Connected to PipeWire via WirePlumber API!")
+
+        omni = Wp.ObjectManager.new()
+
+        omni.add_interest_full(Wp.Node)
+        omni.connect("installed", self.on_omni_installed, loop)
+        
+        core.install_object_manager(omni)
+
+        try:
+            loop.run()
+        except KeyboardInterrupt:
+            print("\nExiting script cleanly...")
+
+
+    def on_wireplumber_api_disconnected(self):
+        print("Disconnected from PipeWire daemon.")
+        sys.exit(1)
+    
+    def on_omni_installed(self, omni, res, loop):
+        print("Global registry features loaded successfully!")
+        registry = omni.get_registry()
+        print(f"Total monitored global objects: {registry.get_n_objects()}")
 
     def apply_css(self):
         # 1. Create a CSS Provider
@@ -202,7 +250,7 @@ class Slider():
         id = self._get_node_id(self.node_name)
 
         if id == "":
-            exit()
+            sys.exit(1)
 
         self.node_id = id
         
