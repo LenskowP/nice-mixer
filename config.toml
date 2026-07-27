@@ -1,17 +1,17 @@
 [devices]
-master_bus = { name = "Master", node_id = 66 }
-stream_bus = { name = "Stream", node_id = 68 }
+master_node = { name = "master_mix", nice_name = "Master" }
+stream_node = { name = "stream_mix", nice_name = "Stream" }
 
-in_buses = [
-    { name = "Mic", node_id = 48 }
+in_nodes = [
+    { name = "mic_sink", nice_name = "  Mic  " }
 ]
 
-out_buses = [
-    { name = "Default", node_id = 51 },
-    { name = "Game", node_id = 54 },
-    { name = "Comms", node_id = 57 },
-    { name = "Media", node_id = 60 },
-    { name = "Other", node_id = 63 }
+out_nodes = [
+    { name = "default_sink", nice_name  = "Default"},
+    { name = "game_sink", nice_name     = " Game "},
+    { name = "comms_sink", nice_name    = " Comms "},
+    { name = "media_sink", nice_name    = " Media "},
+    { name = "aux_sink", nice_name      = "  Aux  "}
 ]
 
 # [apps]
