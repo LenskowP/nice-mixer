@@ -72,7 +72,7 @@ python3 main.py
 - [x] Basic GTK4 interface
 - [X] Volume sliders
 - [X] Configuration file support
-- [ ] Volume control
+- [X] Volume control
 - [ ] Mute controls
 - [ ] Automatic bus discovery
 - [ ] Output device switching
