@@ -1,8 +1,13 @@
 # Nice Mixer
 
+![Mixer Image](https://github.com/LenskowP/nice-mixer/blob/master/preview/mixer-1.png)
+
+
 A lightweight mixer for managing **PipeWire virtual audio buses** on Linux.
 
 Nice Mixer provides a simple interface for controlling the volume and mute state of permanent PipeWire virtual sinks. Rather than acting as another routing engine, it serves as a control surface for an existing PipeWire routing setup.
+
+Functionality may be extended in the future to include the creation, deletion and linking of virtual audio sources.
 
 ## Features
 
@@ -24,14 +29,11 @@ Nice Mixer provides a simple interface for controlling the volume and mute state
 - Keyboard shortcuts
 - System tray support
 - MIDI controller support
-- OBS integration
 - Native PipeWire API backend (replacing `wpctl`)
 
 ## Why?
 
-I require a simple application focused on controlling a set of virtual audio buses.
-
-Nice Mixer aims to fill that gap by providing a clean mixer interface for a predefined PipeWire workflow.
+I require a simple application that focuses on controlling a set of virtual audio buses.
 
 ## Requirements
 
@@ -43,26 +45,46 @@ Nice Mixer aims to fill that gap by providing a clean mixer interface for a pred
 
 ## Installation
 
-Clone the repository:
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/LenskowP/nice-mixer.git
 cd nice-mixer
 ```
 
-Install the required packages (Ubuntu / Linux Mint):
+2. Install the required packages (Ubuntu / Linux Mint):
 
 ```bash
 sudo apt install python3-gi libwireplumber-0.5-dev gir1.2-gtk-4.0
 ```
 
-Ensure PipeWire and WirePlumber are installed and running.
+3. Ensure PipeWire and WirePlumber are installed and running.
+
+
+4. Configure devices in config.toml:
+
+The name property of each node should be set to the `node.name` of the target sink. The nice_name property is the title that is displayed beneath the mixer/slider.
+
+Example ("my_sink" is `node.id` and "Huge Sink" is my chosen mixer display name):
+
+```toml
+[devices]
+master_node = { name = "my_sink", nice_name = "Huge Sink" }
+```
 
 ## Running
 
 ```bash
 python3 main.py
 ```
+
+## Customization
+
+CSS theme files are stored under the `themes` directory. In the config.toml file, change `theme` under the customization header, to your theme's file name without the extension.
+
+e.g. Default theme is 'dark.css' which is set in the config.toml as `dark`.
+
+Customization is limited to Gtk elements for now until I add the class names to the objects.
 
 ## Roadmap
 
@@ -79,6 +101,9 @@ python3 main.py
 - [ ] Profiles and presets
 - [ ] VU meters
 
+
+## Development
+Will fill out once I figure out how to make a release for this and replace the Installation section.
 
 ## Contributing
 
