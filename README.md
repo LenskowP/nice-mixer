@@ -4,6 +4,8 @@ A lightweight mixer for managing **PipeWire virtual audio buses** on Linux.
 
 Nice Mixer provides a simple interface for controlling the volume and mute state of permanent PipeWire virtual sinks. Rather than acting as another routing engine, it serves as a control surface for an existing PipeWire routing setup.
 
+![Mixer Image](https://github.com/LenskowP/nice-mixer/blob/master/preview/mixer-1.png)
+
 ## Features
 
 - Simple GTK4 interface
